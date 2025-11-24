@@ -1,6 +1,5 @@
 [project]
 name = "ran-extension"
-version = "0.0.0"
 authors = [
     { name = "AUTHOR_NAME", email = "AUTHOR_NAME@email.com" }
 ]

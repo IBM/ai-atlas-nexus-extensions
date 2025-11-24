@@ -1,8 +1,6 @@
-# RAN Extension
+# {{ cookiecutter.extension_name }}
 
-Description
-
-## Install extension
+{{cookiecutter.extension_description}}
 
 ## Install extension
 

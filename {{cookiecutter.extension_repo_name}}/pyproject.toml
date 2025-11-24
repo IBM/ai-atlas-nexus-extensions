@@ -1,10 +1,10 @@
 [project]
-name = "ran-extension"
+name = "{{cookiecutter.extension_repo_name}}"
 authors = [
-    { name = "AUTHOR_NAME", email = "AUTHOR_NAME@email.com" },
+    { name = "{{cookiecutter.author_name}}", email = "{{cookiecutter.author_email}}" },
 ]
 keywords = []
-description = ""
+description = "{{cookiecutter.extension_description}}"
 dynamic = [
     "version",
     "readme",
@@ -16,21 +16,24 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Topic :: Software Development",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
-    "License :: OSI Approved :: Apache Software License",
     "Operating System :: MacOS :: MacOS X",
     "Operating System :: POSIX :: Linux",
     "Operating System :: Microsoft :: Windows",
 ]
+license = "{{ cookiecutter.open_source_license }}"
 dependencies = []
 
 [tool.setuptools.dynamic]
-version = { attr = "ran_extension.__version__" }
+version = { attr = "{{cookiecutter.extension_slug}}.__version__" }
 readme = { file = [
     "README.md",
 ], content-type = "text/markdown" }
 
 [tool.setuptools.package-data]
 mypkg = ["*.json", "*.yaml", ".svg"]
+
+[project.urls]
+homepage = "https://github.com/{{cookiecutter.__gh_slug}}"
 
 [tool.isort]
 profile = "black"

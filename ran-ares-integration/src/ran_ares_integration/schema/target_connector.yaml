@@ -1,0 +1,128 @@
+id: https://ibm.github.io/ran-ares-integration/ontology/target_connectors
+name: ares
+version: 0.0.1
+description:
+  Vocabulary to integrate Ares workflow
+default_curi_maps:
+  - semweb_context
+imports:
+  - linkml:types
+  - common
+prefixes:
+  linkml: https://w3id.org/linkml/
+default_range: string
+
+classes:
+  Connector:
+    is_a: Entity
+    description: >-
+      The target large language model (LLM) for conducting the ARES red-teaming evaluation.
+
+  HuggingFaceConnector:
+    is_a: Connector
+    description: >-
+      The target large language model (LLM) for conducting the ARES red-teaming evaluation.
+    attributes:
+      name:
+        description: name
+        ifabsent: huggingface
+      seed:
+        description: Seed to be applied to model, for example, 42.
+        range: integer
+        ifabsent: 42
+      device:
+        description: Device on which to load the model, for example, 'auto'.
+        range: string
+        ifabsent: auto
+      type:
+        description: String describing the python type
+        range: string
+        required: true
+        ifabsent: ares.connectors.huggingface.HuggingFaceConnector
+      model_configs:
+        range: ModelConfig
+        inlined: true
+        required: true
+      tokenizer_config:
+        range: TokenizerConfig
+        inlined: true
+        required: true
+      generate_kwargs:
+        range: GenerateKwargs
+        inlined: true
+    slots:
+      - type
+
+  ModelConfig:
+    attributes:
+      torch_dtype:
+        description: model_config
+        range: string
+        ifabsent: bfloat16
+    slots:
+      - pretrained_model_name_or_path
+
+  TokenizerConfig:
+    attributes:
+      padding_side:
+        description:
+        ifabsent: left
+    slots:
+      - pretrained_model_name_or_path
+
+  GenerateKwargs:
+    attributes:
+      chat_template:
+        description:
+        range: ChatTemplate
+        inlined: true
+      generate_params:
+        description:
+        range: GenerateParams
+        inlined: true
+
+  ChatTemplate:
+    attributes:
+      return_tensors:
+        description:
+        range: string
+        ifabsent: pt
+      thinking:
+        description:
+        range: boolean
+        ifabsent: true
+      return_dict:
+        description:
+        range: boolean
+        ifabsent: true
+      add_generation_prompt:
+        description:
+        range: boolean
+        ifabsent: true
+
+  GenerateParams:
+    attributes:
+      max_new_tokens:
+        description:
+        range: integer
+        ifabsent: 50
+
+  TargetConnectors:
+    tree_root: true
+    description: An umbrella object that holds mapping instances of Connector.
+    attributes:
+      connectors:
+        description: A list of connector
+        multivalued: true
+        required: true
+        any_of:
+          - range: HuggingFaceConnector
+        inlined: true
+        inlined_as_list: true
+
+slots:
+  pretrained_model_name_or_path:
+    description: pretrained_model_name_or_path
+    range: string
+    required: true
+    ifabsent: Qwen/Qwen2-0.5B-Instruct

@@ -31,7 +31,7 @@ dependencies = [
     "pydantic",
     "isort",
     "pre-commit",
-    "ares-redteamer@git+ssh://git@github.com/IBM/ares.git@v0.1.0"
+    "ares-redteamer@git+ssh://git@github.com/IBM/ares.git@4c0a2f12fed8a5224ff5865387a5a97c313f0cd3"
 ]
 
 [tool.setuptools.package-data]

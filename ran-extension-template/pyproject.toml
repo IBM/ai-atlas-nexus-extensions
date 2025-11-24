@@ -1,7 +1,7 @@
 [project]
 name = "ran-extension"
 authors = [
-    { name = "AUTHOR_NAME", email = "AUTHOR_NAME@email.com" }
+    { name = "AUTHOR_NAME", email = "AUTHOR_NAME@email.com" },
 ]
 keywords = []
 description = ""
@@ -9,7 +9,6 @@ dynamic = [
     "version",
     "readme",
 ]
-readme = "README.md"
 requires-python = ">=3.11, <3.12.5"
 classifiers = [
     "Intended Audience :: Developers",

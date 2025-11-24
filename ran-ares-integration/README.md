@@ -6,7 +6,7 @@ ARES Integration for Risk Atlas Nexus allows you to run AI robustness evaluation
 
 ## Install extension
 
-Please follow the instructions provided in the [Risk Atlas Nexus](https://github.com/IBM/risk-atlas-nexus) to install the `ran-ares-integration` extension.
+Please follow the instructions provided in the [Risk Atlas Nexus](https://github.com/IBM/risk-atlas-nexus?tab=readme-ov-file#risk-atlas-nexus-extensions) to install the `ran-ares-integration` extension.
 
 ## Create LinkML schema from the mappings
 

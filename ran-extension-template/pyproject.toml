@@ -1,20 +1,16 @@
 [project]
-name = "ran-ares-integration"
+name = "ran-extension"
+version = "0.0.0"
 authors = [
-    { name = "Dhaval Salwala", email = "dhaval.vinodbhai.salwala@ibm.com" },
-    { name = "Inge Vejsbjerg", email = "ingevejs@ie.ibm.com" },
-    { name = "Elizabeth Daly", email = "elizabeth.daly@ie.ibm.com" },
+    { name = "AUTHOR_NAME", email = "AUTHOR_NAME@email.com" }
 ]
-keywords = [
-    "ai risks",
-    "ai safety",
-    "ai governance"
-]
-description = "ARES Integration for Risk Atlas Nexus allows you to run AI robustness evaluations on AI Systems derived from use cases."
+keywords = []
+description = ""
 dynamic = [
     "version",
     "readme",
 ]
+readme = "README.md"
 requires-python = ">=3.11, <3.12.5"
 classifiers = [
     "Intended Audience :: Developers",
@@ -27,17 +23,10 @@ classifiers = [
     "Operating System :: POSIX :: Linux",
     "Operating System :: Microsoft :: Windows",
 ]
-dependencies = [
-    "linkml",
-    "linkml_runtime",
-    "pydantic",
-    "isort",
-    "pre-commit",
-    "ares-redteamer@git+ssh://git@github.com/IBM/ares.git@4c0a2f12fed8a5224ff5865387a5a97c313f0cd3"
-]
+dependencies = []
 
 [tool.setuptools.dynamic]
-version = { attr = "ran_ares_integration.__version__" }
+version = { attr = "ran_extension.__version__" }
 readme = { file = [
     "README.md",
 ], content-type = "text/markdown" }

@@ -19,7 +19,7 @@ pipx install --user cookiecutter
 
 Use a GitHub template to replicate extension project. Enter the relevant details of your extension. You can change these details later on.
 ```
-pipx run cookiecutter gh:IBM/risk-atlas-nexus-extensions
+pipx run cookiecutter gh:IBM/risk-atlas-nexus-extensions/extension-template
 ```
 
 Once the extension project is generated, follow the instructions below.

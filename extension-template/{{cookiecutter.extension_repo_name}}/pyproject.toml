@@ -20,7 +20,7 @@ classifiers = [
     "Operating System :: POSIX :: Linux",
     "Operating System :: Microsoft :: Windows",
 ]
-license = "{{ cookiecutter.open_source_license }}"
+license = "Apache-2.0"
 dependencies = []
 
 [tool.setuptools.dynamic]

@@ -14,7 +14,7 @@ The purpose of this project is to provide a template for new open source risk-at
 Install cookiecutter using pipx package manager in your python environment.
 ```
 pip install pipx
-pipx install --user cookiecutter
+pipx install cookiecutter
 ```
 
 Use a GitHub template to replicate extension project. Enter the relevant details of your extension. You can change these details later on.
@@ -52,7 +52,12 @@ Once the extension project is generated, follow the instructions below.
     - Usage instructions
     - License
 
-<!-- A more detailed Usage or detailed explaination of the repository here -->
+## Extension list
+
+| Name| Tags | Description|
+| :--- |  :--- | :--- |
+| [Risk Atlas Nexus ARES Intgeration](https://github.com/IBM/ai-atlas-nexus-extensions/tree/main/ran-ares-integration) | AI robustness evaluation, AI risks, red-teaming | ARES Integration for Risk Atlas Nexus allows you to run AI robustness evaluations on AI Systems derived from use cases.|
+
 ## Usage
 
 This repository contains some example best practices for open source repositories:

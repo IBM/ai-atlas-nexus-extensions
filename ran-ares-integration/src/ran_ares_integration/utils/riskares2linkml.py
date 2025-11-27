@@ -1,7 +1,7 @@
 """
-This file creates a LinkML schema using the current mappings between ARES and Risk Atlas Nexus.
+This file creates a LinkML schema using the current mappings between ARES and AI Atlas Nexus.
 The goal is to update these mappings whenever new ones become available and are approved for
-introduction into Risk Atlas Nexus.
+introduction into AI Atlas Nexus.
 """
 
 import os

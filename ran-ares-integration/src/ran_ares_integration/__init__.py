@@ -1,5 +1,5 @@
 """
-Risk Atlas Nexus ARES Extension
+AI Atlas Nexus ARES Extension
 """
 
 # Semantic Version

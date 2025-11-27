@@ -1,4 +1,4 @@
-from risk_atlas_nexus.toolkit.logging import configure_logger
+from ai_atlas_nexus.toolkit.logging import configure_logger
 
 
 logger = configure_logger(__name__)

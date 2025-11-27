@@ -230,7 +230,7 @@ class RiskToARESIntent(Entity):
 
 class RiskToARESMapping(ConfiguredBaseModel):
     """
-    An umbrella object that holds mapping instances from Risk Atlas Nexus to ARES.
+    An umbrella object that holds mapping instances from AI Atlas Nexus to ARES.
     """
     linkml_meta: ClassVar[LinkMLMeta] = LinkMLMeta({'from_schema': 'https://ibm.github.io/ran-ares-integration/ontology/ares_config',
          'tree_root': True})

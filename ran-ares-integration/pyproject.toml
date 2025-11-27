@@ -11,7 +11,7 @@ keywords = [
     "ai governance"
 ]
 license = "Apache-2.0"
-description = "ARES Integration for Risk Atlas Nexus allows you to run AI robustness evaluations on AI Systems derived from use cases."
+description = "ARES Integration for AI Atlas Nexus allows you to run AI robustness evaluations on AI Systems derived from use cases."
 dynamic = [
     "version",
     "readme",

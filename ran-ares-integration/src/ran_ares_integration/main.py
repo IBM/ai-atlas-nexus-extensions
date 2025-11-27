@@ -6,9 +6,9 @@ import pandas as pd
 import yaml
 from ares.redteam import RedTeamer
 from jinja2 import Template
-from risk_atlas_nexus.ai_risk_ontology.datamodel.ai_risk_ontology import Risk
-from risk_atlas_nexus.blocks.inference import InferenceEngine
-from risk_atlas_nexus.toolkit.logging import configure_logger
+from ai_atlas_nexus.ai_risk_ontology.datamodel.ai_risk_ontology import Risk
+from ai_atlas_nexus.blocks.inference import InferenceEngine
+from ai_atlas_nexus.toolkit.logging import configure_logger
 
 from ran_ares_integration.assets import ASSETS_DIR_PATH, RISK_TO_ARES_MAPPING
 from ran_ares_integration.datamodel.risk_to_ares_ontology import RiskToARESIntent

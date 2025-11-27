@@ -138,7 +138,7 @@ classes:
 
   RiskToARESMapping:
     tree_root: true
-    description: An umbrella object that holds mapping instances from Risk Atlas Nexus to ARES.
+    description: An umbrella object that holds mapping instances from AI Atlas Nexus to ARES.
     attributes:
       mappings:
         description: A list of ares goals

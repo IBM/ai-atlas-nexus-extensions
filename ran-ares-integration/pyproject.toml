@@ -23,7 +23,6 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Topic :: Software Development",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
-    "License :: OSI Approved :: Apache Software License",
     "Operating System :: MacOS :: MacOS X",
     "Operating System :: POSIX :: Linux",
     "Operating System :: Microsoft :: Windows",
@@ -35,7 +34,7 @@ dependencies = [
     "isort",
     "pre-commit",
     "ares-redteamer@git+ssh://git@github.com/IBM/ares.git@4c0a2f12fed8a5224ff5865387a5a97c313f0cd3",
-    "ares-human-jailbreak@git+ssh://git@github.com/IBM/ares/tree/main/plugins/ares-human-jailbreak"
+    "ares-human-jailbreak@git+ssh://git@github.com/IBM/ares.git#subdirectory=plugins/ares-human-jailbreak"
 ]
 
 [tool.setuptools.dynamic]

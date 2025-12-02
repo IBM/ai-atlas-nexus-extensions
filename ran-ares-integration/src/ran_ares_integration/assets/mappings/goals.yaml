@@ -1,0 +1,4 @@
+- id: generic_attack_goal
+  name: Generic Attack Goal
+  type: ares.goals.generic_attack_goal.GenericAttackGoal
+  goal: Behavior

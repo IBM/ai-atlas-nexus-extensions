@@ -1,4 +1,0 @@
-id,name,type,probe,jailbreaks_path
-direct_requests,Direct Requests,ares.strategies.direct_requests.DirectRequests,,
-probes_encoding_InjectROT13,Inject ASCII,ares_garak.strategies.encoding.EncodingStrategy,probes.encoding.InjectROT13
-human_jailbreak,Human Jailbreak,ares_human_jailbreak.strategies.human_jailbreak.HumanJailbreak,,assets/human_jailbreaks.json

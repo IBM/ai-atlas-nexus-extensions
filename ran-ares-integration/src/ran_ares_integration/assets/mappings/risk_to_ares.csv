@@ -1,5 +1,0 @@
-id,risk_id,name,goal_id,strategy_ids,evaluation_id
-id_1,direct-instructions-attack,Direct Instructions Attack,generic_attack_goal,"direct_requests",keyword
-id_2,encoded-interactions-attack,Encoded Interactions Attack,generic_attack_goal,"probes_encoding_InjectROT13",keyword
-id_3,social-hacking-attack,Social Hacking Attack,generic_attack_goal,"human_jailbreak",keyword
-id_4,specialized-tokens-attack,Specialized Tokens Attack,generic_attack_goal,"direct_requests,probes_encoding_InjectROT13,human_jailbreak",keyword

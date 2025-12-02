@@ -8,6 +8,7 @@ default_curi_maps:
 imports:
   - linkml:types
   - common
+  - target_connector
 prefixes:
   linkml: https://w3id.org/linkml/
 default_range: string
@@ -90,12 +91,20 @@ classes:
       debug_mode:
         description: The output path for the evaluation results
         range: boolean
+      connector:
+        description: A Connector instance containing the evaluation model used.
+        any_of:
+          - range: HuggingFaceConnector
+        multivalued: true
+        inlined: true
+        inlined_as_list: false
+        required: false
       keyword_list_or_path:
         description: String describing the ARES evaluation type
         range: string
     slots:
       type
-
+        
   AresIntent:
     is_a: Entity
     description: >-

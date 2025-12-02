@@ -50,6 +50,10 @@ classes:
       generate_kwargs:
         range: GenerateKwargs
         inlined: true
+      prompt_path:
+        description: The evaluator prompt path.
+        range: string
+        required: false
     slots:
       - type
 

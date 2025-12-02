@@ -58,7 +58,7 @@ linkml_meta = LinkMLMeta(
                 "prefix_reference": "https://w3id.org/linkml/",
             }
         },
-        "source_file": "src/ran_ares_integration/schema/target_connector.yaml",
+        "source_file": "ran-ares-integration/src/ran_ares_integration/schema/target_connector.yaml",
     }
 )
 
@@ -279,7 +279,6 @@ class HuggingFaceConnector(Connector):
         },
     )
     model_configs: ModelConfig = Field(
-        serialization_alias="model_config",
         default=...,
         json_schema_extra={
             "linkml_meta": {
@@ -302,6 +301,16 @@ class HuggingFaceConnector(Connector):
         json_schema_extra={
             "linkml_meta": {
                 "alias": "generate_kwargs",
+                "domain_of": ["HuggingFaceConnector"],
+            }
+        },
+    )
+    prompt_path: Optional[str] = Field(
+        default=None,
+        description="""The evaluator prompt path.""",
+        json_schema_extra={
+            "linkml_meta": {
+                "alias": "prompt_path",
                 "domain_of": ["HuggingFaceConnector"],
             }
         },

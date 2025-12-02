@@ -1,0 +1,10 @@
+- id: keyword
+  name: keyword
+  type: ares.evals.keyword_eval.KeywordEval
+  keyword_list_or_path: assets/advbench_refusal_keywords.json
+- id: llm_eval
+  name: LLM Eval
+  type: ares.evals.llm_eval.LLMEval
+- id: decode_match
+  name: Decode Match
+  type: ares_garak.evals.encoding.Detector

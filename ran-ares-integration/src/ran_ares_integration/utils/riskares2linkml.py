@@ -19,45 +19,59 @@ from ran_ares_integration.datamodel.risk_to_ares_ontology import (
     RiskToARESIntent,
     RiskToARESMapping,
 )
+from ran_ares_integration.utils.data_utils import read_yaml
 
 
-risk_to_ares = pd.read_csv(ASSETS_DIR_PATH.joinpath("mappings/risk_to_ares.csv"))
-goals = pd.read_csv(ASSETS_DIR_PATH.joinpath("mappings/goals.csv"))
-strategies = pd.read_csv(ASSETS_DIR_PATH.joinpath("mappings/strategies.csv"))
-evaluations = pd.read_csv(ASSETS_DIR_PATH.joinpath("mappings/evaluations.csv"))
+risk_to_ares_map = read_yaml(ASSETS_DIR_PATH.joinpath("mappings/risk_to_ares.yaml"))
+goals = read_yaml(ASSETS_DIR_PATH.joinpath("mappings/goals.yaml"))
+strategies = read_yaml(ASSETS_DIR_PATH.joinpath("mappings/strategies.yaml"))
+evaluations = read_yaml(ASSETS_DIR_PATH.joinpath("mappings/evaluations.yaml"))
 
 mappings = []
-for row in risk_to_ares.itertuples():
-    goal = goals[goals["id"] == row.goal_id].iloc[0].to_dict()
-    strategy = strategies[strategies["id"].isin(row.strategy_ids.split(","))]
-    evaluation = evaluations[evaluations["id"] == row.evaluation_id].iloc[0].to_dict()
+for risk_to_ares in risk_to_ares_map:
+    goal = list(filter(lambda goal: goal["id"] == risk_to_ares["goal_id"], goals))[0]
+    strategy = list(
+        filter(
+            lambda strategy: strategy["id"] in risk_to_ares["strategy_ids"], strategies
+        )
+    )
+    evaluation = list(
+        filter(
+            lambda evaluation: evaluation["id"] == risk_to_ares["evaluation_id"],
+            evaluations,
+        )
+    )[0]
+
     mappings.append(
         RiskToARESIntent(
-            id=row.id,
-            name=row.name,
-            risk_id=row.risk_id,
+            id=risk_to_ares["id"],
+            risk_id=risk_to_ares["risk_id"],
+            name=risk_to_ares["name"],
             intent=AresIntent(
                 id=str(uuid4()),
-                name=f"Ares_Intent_{row.risk_id}",
+                name=f"Ares_Intent_{risk_to_ares["name"]}",
                 goal=ARESGoal(**goal),
                 strategy={
                     ares_strategy["id"]: ARESStrategy(
                         output_path=f"results/{ares_strategy["id"]}_output.json",
-                        **{
-                            x: y
-                            for x, y in ares_strategy.to_dict().items()
-                            if y != pd.NA
-                        },
+                        **ares_strategy,
                     )
-                    for _, ares_strategy in strategy.iterrows()
+                    for ares_strategy in strategy
                 },
-                evaluation=AresEvaluator(**evaluation),
+                evaluation=AresEvaluator(
+                    connector=(
+                        risk_to_ares["evaluation_model"]
+                        if "evaluation_model" in risk_to_ares
+                        else None
+                    ),
+                    **evaluation,
+                ),
             ),
         )
     )
 
 with open(
-    os.path.join(ASSETS_DIR_PATH, "knowledge_graph", "risk_to_ares_mappings.yaml"),
+    os.path.join(ASSETS_DIR_PATH, "knowledge_graph", "risk_to_ares_mappings_NEW.yaml"),
     "+tw",
     encoding="utf-8",
 ) as output_file:

@@ -1,10 +1,10 @@
-- risk_id: direct-instructions-attack
+- risk_id: atlas-direct-instructions-attack
   risk_name: Direct Instructions Attack
   goal: generic_attack_goal
   strategy:
     - direct_requests
   evaluation: keyword
-- risk_id: encoded-interactions-attack
+- risk_id: atlas-encoded-interactions-attack
   risk_name: Encoded Interactions Attack
   goal: 
     generic_attack_goal:
@@ -12,13 +12,13 @@
   strategy: 
     - inject_hex
   evaluation: llm_eval_2
-- risk_id: social-hacking-attack
+- risk_id: atlas-social-hacking-attack
   risk_name: Social Hacking Attack
   goal: generic_attack_goal
   strategy:
     - human_jailbreak
   evaluation: llm_eval
-- risk_id: specialized-tokens-attack
+- risk_id: atlas-specialized-tokens-attack
   risk_name: Specialized Tokens Attack
   goal:
     generic_attack_goal:
@@ -28,3 +28,9 @@
     - inject_ascii85
     - human_jailbreak
   evaluation: keyword
+- risk_id: atlas-evasion-attack
+- risk_id: atlas-membership-inference-attack
+- risk_id: atlas-context-overload-attack
+- risk_id: atlas-extraction-attack
+- risk_id: atlas-attribute-inference-attack
+- risk_id: atlas-indirect-instructions-attack

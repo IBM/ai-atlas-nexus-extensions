@@ -95,7 +95,7 @@ class Extension:
             logger.info(f"No. of attack seeds generated: {len(attack_seeds)}")
 
             # Write ARES attack seeds to a tmp file system
-            attack_seeds_path = os.path.join(attack_seeds, "attack_seeds.csv")
+            attack_seeds_path = os.path.join(tempfile.gettempdir(), "attack_seeds.csv")
             pd.DataFrame(attack_seeds).rename(
                 columns={"prompt": ares_intent.goal.goal}
             ).to_csv(attack_seeds_path, index=False)

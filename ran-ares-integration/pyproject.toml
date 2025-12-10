@@ -33,8 +33,9 @@ dependencies = [
     "pydantic",
     "isort",
     "pre-commit",
-    "ares-redteamer@git+ssh://git@github.com/IBM/ares.git@4c0a2f12fed8a5224ff5865387a5a97c313f0cd3",
-    "ares-human-jailbreak@git+ssh://git@github.com/IBM/ares.git#subdirectory=plugins/ares-human-jailbreak"
+    "ares-redteamer@git+ssh://git@github.com/IBM/ares.git@1e3bf42813c0a26b02e1ede04c36fdcf707254d3",
+    "ares-human-jailbreak@git+ssh://git@github.com/IBM/ares.git#subdirectory=plugins/ares-human-jailbreak",
+    "ares-garak@git+ssh://git@github.com/IBM/ares.git#subdirectory=plugins/ares-garak"
 ]
 
 [tool.setuptools.dynamic]

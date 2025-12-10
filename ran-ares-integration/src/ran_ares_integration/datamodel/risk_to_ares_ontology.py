@@ -16,1204 +16,241 @@ version = "0.0.1"
 
 class ConfiguredBaseModel(BaseModel):
     model_config = ConfigDict(
-        validate_assignment=True,
-        validate_default=True,
-        extra="allow",
-        arbitrary_types_allowed=True,
-        use_enum_values=True,
-        strict=False,
+        validate_assignment = True,
+        validate_default = True,
+        extra = "allow",
+        arbitrary_types_allowed = True,
+        use_enum_values = True,
+        strict = False,
     )
     pass
+
+
 
 
 class LinkMLMeta(RootModel):
     root: dict[str, Any] = {}
     model_config = ConfigDict(frozen=True)
 
-    def __getattr__(self, key: str):
+    def __getattr__(self, key:str):
         return getattr(self.root, key)
 
-    def __getitem__(self, key: str):
+    def __getitem__(self, key:str):
         return self.root[key]
 
-    def __setitem__(self, key: str, value):
+    def __setitem__(self, key:str, value):
         self.root[key] = value
 
-    def __contains__(self, key: str) -> bool:
+    def __contains__(self, key:str) -> bool:
         return key in self.root
 
 
-linkml_meta = LinkMLMeta(
-    {
-        "default_curi_maps": ["semweb_context"],
-        "default_prefix": "https://ibm.github.io/ran-ares-integration/ontology/ares_config/",
-        "default_range": "string",
-        "description": "Vocabulary to integrate Ares workflow",
-        "id": "https://ibm.github.io/ran-ares-integration/ontology/ares_config",
-        "imports": ["linkml:types", "common", "target_connector"],
-        "name": "ares",
-        "prefixes": {
-            "linkml": {
-                "prefix_prefix": "linkml",
-                "prefix_reference": "https://w3id.org/linkml/",
-            }
-        },
-        "source_file": "ran-ares-integration/src/ran_ares_integration/schema/risk_to_ares.yaml",
-    }
-)
+linkml_meta = LinkMLMeta({'default_curi_maps': ['semweb_context'],
+     'default_prefix': 'https://ibm.github.io/ran-ares-integration/ontology/ares_config/',
+     'default_range': 'string',
+     'description': 'Vocabulary to integrate Ares workflow',
+     'id': 'https://ibm.github.io/ran-ares-integration/ontology/ares_config',
+     'imports': ['linkml:types', 'common'],
+     'name': 'ares',
+     'prefixes': {'linkml': {'prefix_prefix': 'linkml',
+                             'prefix_reference': 'https://w3id.org/linkml/'}},
+     'source_file': 'ran-ares-integration/src/ran_ares_integration/schema/risk_to_ares.yaml'} )
 
 
 class Entity(ConfiguredBaseModel):
     """
     A generic grouping for any identifiable entity.
     """
+    linkml_meta: ClassVar[LinkMLMeta] = LinkMLMeta({'abstract': True,
+         'class_uri': 'schema:Thing',
+         'from_schema': 'https://ibm.github.io/ran-ares-integration/ontology/common'})
 
-    linkml_meta: ClassVar[LinkMLMeta] = LinkMLMeta(
-        {
-            "abstract": True,
-            "class_uri": "schema:Thing",
-            "from_schema": "https://ibm.github.io/ran-ares-integration/ontology/common",
-        }
-    )
-
-    id: str = Field(
-        default=...,
-        description="""A unique identifier to this instance of the model element. Example identifiers include UUID, URI, URN, etc.""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "id",
-                "domain_of": ["Entity"],
-                "slot_uri": "schema:identifier",
-            }
-        },
-    )
-    name: Optional[str] = Field(
-        default=None,
-        description="""A text name of this instance.""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "name",
-                "domain_of": ["Entity", "HuggingFaceConnector"],
-                "slot_uri": "schema:name",
-            }
-        },
-    )
-    description: Optional[str] = Field(
-        default=None,
-        description="""The description of an entity""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "description",
-                "domain_of": ["Entity"],
-                "slot_uri": "schema:description",
-            }
-        },
-    )
-    url: Optional[str] = Field(
-        default=None,
-        description="""An optional URL associated with this instance.""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "url",
-                "domain_of": ["Entity"],
-                "slot_uri": "schema:url",
-            }
-        },
-    )
-    dateCreated: Optional[date] = Field(
-        default=None,
-        description="""The date on which the entity was created.""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "dateCreated",
-                "domain_of": ["Entity"],
-                "slot_uri": "schema:dateCreated",
-            }
-        },
-    )
-    dateModified: Optional[date] = Field(
-        default=None,
-        description="""The date on which the entity was most recently modified.""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "dateModified",
-                "domain_of": ["Entity"],
-                "slot_uri": "schema:dateModified",
-            }
-        },
-    )
-
-
-class Connector(Entity):
-    """
-    The target large language model (LLM) for conducting the ARES red-teaming evaluation.
-    """
-
-    linkml_meta: ClassVar[LinkMLMeta] = LinkMLMeta(
-        {
-            "from_schema": "https://ibm.github.io/ran-ares-integration/ontology/target_connectors"
-        }
-    )
-
-    id: str = Field(
-        default=...,
-        description="""A unique identifier to this instance of the model element. Example identifiers include UUID, URI, URN, etc.""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "id",
-                "domain_of": ["Entity"],
-                "slot_uri": "schema:identifier",
-            }
-        },
-    )
-    name: Optional[str] = Field(
-        default=None,
-        description="""A text name of this instance.""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "name",
-                "domain_of": ["Entity", "HuggingFaceConnector"],
-                "slot_uri": "schema:name",
-            }
-        },
-    )
-    description: Optional[str] = Field(
-        default=None,
-        description="""The description of an entity""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "description",
-                "domain_of": ["Entity"],
-                "slot_uri": "schema:description",
-            }
-        },
-    )
-    url: Optional[str] = Field(
-        default=None,
-        description="""An optional URL associated with this instance.""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "url",
-                "domain_of": ["Entity"],
-                "slot_uri": "schema:url",
-            }
-        },
-    )
-    dateCreated: Optional[date] = Field(
-        default=None,
-        description="""The date on which the entity was created.""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "dateCreated",
-                "domain_of": ["Entity"],
-                "slot_uri": "schema:dateCreated",
-            }
-        },
-    )
-    dateModified: Optional[date] = Field(
-        default=None,
-        description="""The date on which the entity was most recently modified.""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "dateModified",
-                "domain_of": ["Entity"],
-                "slot_uri": "schema:dateModified",
-            }
-        },
-    )
-
-
-class HuggingFaceConnector(Connector):
-    """
-    The target large language model (LLM) for conducting the ARES red-teaming evaluation.
-    """
-
-    linkml_meta: ClassVar[LinkMLMeta] = LinkMLMeta(
-        {
-            "from_schema": "https://ibm.github.io/ran-ares-integration/ontology/target_connectors"
-        }
-    )
-
-    type: str = Field(
-        default="ares.connectors.huggingface.HuggingFaceConnector",
-        description="""String describing the python type""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "type",
-                "domain_of": [
-                    "HuggingFaceConnector",
-                    "ARESGoal",
-                    "ARESStrategy",
-                    "AresEvaluator",
-                ],
-                "ifabsent": "ares.connectors.huggingface.HuggingFaceConnector",
-            }
-        },
-    )
-    name: Optional[str] = Field(
-        default="huggingface",
-        description="""name""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "name",
-                "domain_of": ["Entity", "HuggingFaceConnector"],
-                "ifabsent": "huggingface",
-            }
-        },
-    )
-    seed: Optional[int] = Field(
-        default=42,
-        description="""Seed to be applied to model, for example, 42.""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "seed",
-                "domain_of": ["HuggingFaceConnector"],
-                "ifabsent": "42",
-            }
-        },
-    )
-    device: Optional[str] = Field(
-        default="auto",
-        description="""Device on which to load the model, for example, 'auto'.""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "device",
-                "domain_of": ["HuggingFaceConnector"],
-                "ifabsent": "auto",
-            }
-        },
-    )
-    model_configs: ModelConfig = Field(
-        default=...,
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "model_configs",
-                "domain_of": ["HuggingFaceConnector"],
-            }
-        },
-    )
-    tokenizer_config: TokenizerConfig = Field(
-        default=...,
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "tokenizer_config",
-                "domain_of": ["HuggingFaceConnector"],
-            }
-        },
-    )
-    generate_kwargs: Optional[GenerateKwargs] = Field(
-        default=None,
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "generate_kwargs",
-                "domain_of": ["HuggingFaceConnector"],
-            }
-        },
-    )
-    prompt_path: Optional[str] = Field(
-        default=None,
-        description="""The evaluator prompt path.""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "prompt_path",
-                "domain_of": ["HuggingFaceConnector"],
-            }
-        },
-    )
-    id: str = Field(
-        default=...,
-        description="""A unique identifier to this instance of the model element. Example identifiers include UUID, URI, URN, etc.""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "id",
-                "domain_of": ["Entity"],
-                "slot_uri": "schema:identifier",
-            }
-        },
-    )
-    description: Optional[str] = Field(
-        default=None,
-        description="""The description of an entity""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "description",
-                "domain_of": ["Entity"],
-                "slot_uri": "schema:description",
-            }
-        },
-    )
-    url: Optional[str] = Field(
-        default=None,
-        description="""An optional URL associated with this instance.""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "url",
-                "domain_of": ["Entity"],
-                "slot_uri": "schema:url",
-            }
-        },
-    )
-    dateCreated: Optional[date] = Field(
-        default=None,
-        description="""The date on which the entity was created.""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "dateCreated",
-                "domain_of": ["Entity"],
-                "slot_uri": "schema:dateCreated",
-            }
-        },
-    )
-    dateModified: Optional[date] = Field(
-        default=None,
-        description="""The date on which the entity was most recently modified.""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "dateModified",
-                "domain_of": ["Entity"],
-                "slot_uri": "schema:dateModified",
-            }
-        },
-    )
-
-
-class ModelConfig(ConfiguredBaseModel):
-    linkml_meta: ClassVar[LinkMLMeta] = LinkMLMeta(
-        {
-            "from_schema": "https://ibm.github.io/ran-ares-integration/ontology/target_connectors"
-        }
-    )
-
-    pretrained_model_name_or_path: str = Field(
-        default="Qwen/Qwen2-0.5B-Instruct",
-        description="""pretrained_model_name_or_path""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "pretrained_model_name_or_path",
-                "domain_of": ["ModelConfig", "TokenizerConfig"],
-                "ifabsent": "Qwen/Qwen2-0.5B-Instruct",
-            }
-        },
-    )
-    torch_dtype: Optional[str] = Field(
-        default="bfloat16",
-        description="""model_config""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "torch_dtype",
-                "domain_of": ["ModelConfig"],
-                "ifabsent": "bfloat16",
-            }
-        },
-    )
-
-
-class TokenizerConfig(ConfiguredBaseModel):
-    linkml_meta: ClassVar[LinkMLMeta] = LinkMLMeta(
-        {
-            "from_schema": "https://ibm.github.io/ran-ares-integration/ontology/target_connectors"
-        }
-    )
-
-    pretrained_model_name_or_path: str = Field(
-        default="Qwen/Qwen2-0.5B-Instruct",
-        description="""pretrained_model_name_or_path""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "pretrained_model_name_or_path",
-                "domain_of": ["ModelConfig", "TokenizerConfig"],
-                "ifabsent": "Qwen/Qwen2-0.5B-Instruct",
-            }
-        },
-    )
-    padding_side: Optional[str] = Field(
-        default="left",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "padding_side",
-                "domain_of": ["TokenizerConfig"],
-                "ifabsent": "left",
-            }
-        },
-    )
-
-
-class GenerateKwargs(ConfiguredBaseModel):
-    linkml_meta: ClassVar[LinkMLMeta] = LinkMLMeta(
-        {
-            "from_schema": "https://ibm.github.io/ran-ares-integration/ontology/target_connectors"
-        }
-    )
-
-    chat_template: Optional[ChatTemplate] = Field(
-        default=None,
-        json_schema_extra={
-            "linkml_meta": {"alias": "chat_template", "domain_of": ["GenerateKwargs"]}
-        },
-    )
-    generate_params: Optional[GenerateParams] = Field(
-        default=None,
-        json_schema_extra={
-            "linkml_meta": {"alias": "generate_params", "domain_of": ["GenerateKwargs"]}
-        },
-    )
-
-
-class ChatTemplate(ConfiguredBaseModel):
-    linkml_meta: ClassVar[LinkMLMeta] = LinkMLMeta(
-        {
-            "from_schema": "https://ibm.github.io/ran-ares-integration/ontology/target_connectors"
-        }
-    )
-
-    return_tensors: Optional[str] = Field(
-        default="pt",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "return_tensors",
-                "domain_of": ["ChatTemplate"],
-                "ifabsent": "pt",
-            }
-        },
-    )
-    thinking: Optional[bool] = Field(
-        default=True,
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "thinking",
-                "domain_of": ["ChatTemplate"],
-                "ifabsent": "True",
-            }
-        },
-    )
-    return_dict: Optional[bool] = Field(
-        default=True,
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "return_dict",
-                "domain_of": ["ChatTemplate"],
-                "ifabsent": "True",
-            }
-        },
-    )
-    add_generation_prompt: Optional[bool] = Field(
-        default=True,
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "add_generation_prompt",
-                "domain_of": ["ChatTemplate"],
-                "ifabsent": "True",
-            }
-        },
-    )
-
-
-class GenerateParams(ConfiguredBaseModel):
-    linkml_meta: ClassVar[LinkMLMeta] = LinkMLMeta(
-        {
-            "from_schema": "https://ibm.github.io/ran-ares-integration/ontology/target_connectors"
-        }
-    )
-
-    max_new_tokens: Optional[int] = Field(
-        default=50,
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "max_new_tokens",
-                "domain_of": ["GenerateParams"],
-                "ifabsent": "50",
-            }
-        },
-    )
-
-
-class TargetConnectors(ConfiguredBaseModel):
-    """
-    An umbrella object that holds mapping instances of Connector.
-    """
-
-    linkml_meta: ClassVar[LinkMLMeta] = LinkMLMeta(
-        {
-            "from_schema": "https://ibm.github.io/ran-ares-integration/ontology/target_connectors",
-            "tree_root": True,
-        }
-    )
-
-    connectors: list[HuggingFaceConnector] = Field(
-        default=...,
-        description="""A list of connector""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "connectors",
-                "any_of": [{"range": "HuggingFaceConnector"}],
-                "domain_of": ["TargetConnectors"],
-            }
-        },
-    )
+    id: str = Field(default=..., description="""A unique identifier to this instance of the model element. Example identifiers include UUID, URI, URN, etc.""", json_schema_extra = { "linkml_meta": {'alias': 'id', 'domain_of': ['Entity'], 'slot_uri': 'schema:identifier'} })
+    name: Optional[str] = Field(default=None, description="""A text name of this instance.""", json_schema_extra = { "linkml_meta": {'alias': 'name', 'domain_of': ['Entity'], 'slot_uri': 'schema:name'} })
+    description: Optional[str] = Field(default=None, description="""The description of an entity""", json_schema_extra = { "linkml_meta": {'alias': 'description',
+         'domain_of': ['Entity'],
+         'slot_uri': 'schema:description'} })
+    url: Optional[str] = Field(default=None, description="""An optional URL associated with this instance.""", json_schema_extra = { "linkml_meta": {'alias': 'url', 'domain_of': ['Entity'], 'slot_uri': 'schema:url'} })
+    dateCreated: Optional[date] = Field(default=None, description="""The date on which the entity was created.""", json_schema_extra = { "linkml_meta": {'alias': 'dateCreated',
+         'domain_of': ['Entity'],
+         'slot_uri': 'schema:dateCreated'} })
+    dateModified: Optional[date] = Field(default=None, description="""The date on which the entity was most recently modified.""", json_schema_extra = { "linkml_meta": {'alias': 'dateModified',
+         'domain_of': ['Entity'],
+         'slot_uri': 'schema:dateModified'} })
 
 
 class ARESGoal(Entity):
     """
     Base ARES Goal. Specify the high-level attack intent, like provoking harmful responses on context-specific attack seeds.
     """
+    linkml_meta: ClassVar[LinkMLMeta] = LinkMLMeta({'from_schema': 'https://ibm.github.io/ran-ares-integration/ontology/ares_config'})
 
-    linkml_meta: ClassVar[LinkMLMeta] = LinkMLMeta(
-        {
-            "from_schema": "https://ibm.github.io/ran-ares-integration/ontology/ares_config"
-        }
-    )
-
-    type: str = Field(
-        default=...,
-        description="""String describing the python type""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "type",
-                "domain_of": [
-                    "HuggingFaceConnector",
-                    "ARESGoal",
-                    "ARESStrategy",
-                    "AresEvaluator",
-                ],
-            }
-        },
-    )
-    origin: str = Field(
-        default="local",
-        description="""local or remote""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "origin",
-                "domain_of": ["ARESGoal"],
-                "ifabsent": "local",
-            }
-        },
-    )
-    base_path: Optional[str] = Field(
-        default=None,
-        description="""path to input file""",
-        json_schema_extra={
-            "linkml_meta": {"alias": "base_path", "domain_of": ["ARESGoal"]}
-        },
-    )
-    output_path: str = Field(
-        default="results/attack_goals_output.json",
-        description="""filename to output of the processed goals""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "output_path",
-                "domain_of": ["ARESGoal", "ARESStrategy", "AresEvaluator"],
-                "ifabsent": "results/attack_goals_output.json",
-            }
-        },
-    )
-    goal: Optional[str] = Field(
-        default=None,
-        description="""column name of the field in the input file to be used as source of goals""",
-        json_schema_extra={
-            "linkml_meta": {"alias": "goal", "domain_of": ["ARESGoal", "AresIntent"]}
-        },
-    )
-    builder_kwargs: Optional[str] = Field(
-        default=None,
-        description="""column name of the field in the input file to be used as source of labels.""",
-        json_schema_extra={
-            "linkml_meta": {"alias": "builder_kwargs", "domain_of": ["ARESGoal"]}
-        },
-    )
-    task_kwargs: Optional[str] = Field(
-        default=None,
-        description="""column name of the field in the input file to be used as source of labels.""",
-        json_schema_extra={
-            "linkml_meta": {"alias": "task_kwargs", "domain_of": ["ARESGoal"]}
-        },
-    )
-    base_kwargs: Optional[str] = Field(
-        default=None,
-        description="""column name of the field in the input file to be used as source of labels.""",
-        json_schema_extra={
-            "linkml_meta": {"alias": "base_kwargs", "domain_of": ["ARESGoal"]}
-        },
-    )
-    id: str = Field(
-        default=...,
-        description="""A unique identifier to this instance of the model element. Example identifiers include UUID, URI, URN, etc.""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "id",
-                "domain_of": ["Entity"],
-                "slot_uri": "schema:identifier",
-            }
-        },
-    )
-    name: Optional[str] = Field(
-        default=None,
-        description="""A text name of this instance.""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "name",
-                "domain_of": ["Entity", "HuggingFaceConnector"],
-                "slot_uri": "schema:name",
-            }
-        },
-    )
-    description: Optional[str] = Field(
-        default=None,
-        description="""The description of an entity""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "description",
-                "domain_of": ["Entity"],
-                "slot_uri": "schema:description",
-            }
-        },
-    )
-    url: Optional[str] = Field(
-        default=None,
-        description="""An optional URL associated with this instance.""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "url",
-                "domain_of": ["Entity"],
-                "slot_uri": "schema:url",
-            }
-        },
-    )
-    dateCreated: Optional[date] = Field(
-        default=None,
-        description="""The date on which the entity was created.""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "dateCreated",
-                "domain_of": ["Entity"],
-                "slot_uri": "schema:dateCreated",
-            }
-        },
-    )
-    dateModified: Optional[date] = Field(
-        default=None,
-        description="""The date on which the entity was most recently modified.""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "dateModified",
-                "domain_of": ["Entity"],
-                "slot_uri": "schema:dateModified",
-            }
-        },
-    )
+    type: str = Field(default=..., description="""String describing the python type""", json_schema_extra = { "linkml_meta": {'alias': 'type', 'domain_of': ['ARESGoal', 'ARESStrategy', 'AresEvaluator']} })
+    origin: str = Field(default="local", description="""local or remote""", json_schema_extra = { "linkml_meta": {'alias': 'origin', 'domain_of': ['ARESGoal'], 'ifabsent': 'local'} })
+    base_path: Optional[str] = Field(default=None, description="""path to input file""", json_schema_extra = { "linkml_meta": {'alias': 'base_path', 'domain_of': ['ARESGoal']} })
+    output_path: str = Field(default="results/attack_goals.json", description="""filename to output of the processed goals""", json_schema_extra = { "linkml_meta": {'alias': 'output_path',
+         'domain_of': ['ARESGoal', 'ARESStrategy', 'AresEvaluator'],
+         'ifabsent': 'results/attack_goals.json'} })
+    goal: Optional[str] = Field(default=None, description="""column name of the field in the input file to be used as source of goals""", json_schema_extra = { "linkml_meta": {'alias': 'goal', 'domain_of': ['ARESGoal', 'AresIntent']} })
+    builder_kwargs: Optional[str] = Field(default=None, description="""column name of the field in the input file to be used as source of labels.""", json_schema_extra = { "linkml_meta": {'alias': 'builder_kwargs', 'domain_of': ['ARESGoal']} })
+    task_kwargs: Optional[str] = Field(default=None, description="""column name of the field in the input file to be used as source of labels.""", json_schema_extra = { "linkml_meta": {'alias': 'task_kwargs', 'domain_of': ['ARESGoal']} })
+    base_kwargs: Optional[str] = Field(default=None, description="""column name of the field in the input file to be used as source of labels.""", json_schema_extra = { "linkml_meta": {'alias': 'base_kwargs', 'domain_of': ['ARESGoal']} })
+    id: str = Field(default=..., description="""A unique identifier to this instance of the model element. Example identifiers include UUID, URI, URN, etc.""", json_schema_extra = { "linkml_meta": {'alias': 'id', 'domain_of': ['Entity'], 'slot_uri': 'schema:identifier'} })
+    name: Optional[str] = Field(default=None, description="""A text name of this instance.""", json_schema_extra = { "linkml_meta": {'alias': 'name', 'domain_of': ['Entity'], 'slot_uri': 'schema:name'} })
+    description: Optional[str] = Field(default=None, description="""The description of an entity""", json_schema_extra = { "linkml_meta": {'alias': 'description',
+         'domain_of': ['Entity'],
+         'slot_uri': 'schema:description'} })
+    url: Optional[str] = Field(default=None, description="""An optional URL associated with this instance.""", json_schema_extra = { "linkml_meta": {'alias': 'url', 'domain_of': ['Entity'], 'slot_uri': 'schema:url'} })
+    dateCreated: Optional[date] = Field(default=None, description="""The date on which the entity was created.""", json_schema_extra = { "linkml_meta": {'alias': 'dateCreated',
+         'domain_of': ['Entity'],
+         'slot_uri': 'schema:dateCreated'} })
+    dateModified: Optional[date] = Field(default=None, description="""The date on which the entity was most recently modified.""", json_schema_extra = { "linkml_meta": {'alias': 'dateModified',
+         'domain_of': ['Entity'],
+         'slot_uri': 'schema:dateModified'} })
 
 
 class ARESStrategy(Entity):
     """
     Create attack payloads and run attacks for different threat models. The strategy used for red-teaming the language model and, in particular, for transforming the goal prompts saved in the previous step to adversarial attack prompts.
     """
+    linkml_meta: ClassVar[LinkMLMeta] = LinkMLMeta({'from_schema': 'https://ibm.github.io/ran-ares-integration/ontology/ares_config'})
 
-    linkml_meta: ClassVar[LinkMLMeta] = LinkMLMeta(
-        {
-            "from_schema": "https://ibm.github.io/ran-ares-integration/ontology/ares_config"
-        }
-    )
+    type: str = Field(default=..., description="""String describing the python type""", json_schema_extra = { "linkml_meta": {'alias': 'type', 'domain_of': ['ARESGoal', 'ARESStrategy', 'AresEvaluator']} })
+    input_path: str = Field(default="results/attack_goals.json", description="""The input path""", json_schema_extra = { "linkml_meta": {'alias': 'input_path',
+         'domain_of': ['ARESStrategy'],
+         'ifabsent': 'results/attack_goals.json'} })
+    output_path: str = Field(default=..., description="""The output path""", json_schema_extra = { "linkml_meta": {'alias': 'output_path',
+         'domain_of': ['ARESGoal', 'ARESStrategy', 'AresEvaluator']} })
+    jailbreaks_path: Optional[str] = Field(default=None, description="""jailbreaks path""", json_schema_extra = { "linkml_meta": {'alias': 'jailbreaks_path', 'domain_of': ['ARESStrategy']} })
+    probe: Optional[str] = Field(default=None, description="""A Garak encoding probe to aligned with attack strategy""", json_schema_extra = { "linkml_meta": {'alias': 'probe', 'domain_of': ['ARESStrategy']} })
+    templates: Optional[list[str]] = Field(default=None, description="""Instruction templates.""", json_schema_extra = { "linkml_meta": {'alias': 'templates', 'domain_of': ['ARESStrategy']} })
+    id: str = Field(default=..., description="""A unique identifier to this instance of the model element. Example identifiers include UUID, URI, URN, etc.""", json_schema_extra = { "linkml_meta": {'alias': 'id', 'domain_of': ['Entity'], 'slot_uri': 'schema:identifier'} })
+    name: Optional[str] = Field(default=None, description="""A text name of this instance.""", json_schema_extra = { "linkml_meta": {'alias': 'name', 'domain_of': ['Entity'], 'slot_uri': 'schema:name'} })
+    description: Optional[str] = Field(default=None, description="""The description of an entity""", json_schema_extra = { "linkml_meta": {'alias': 'description',
+         'domain_of': ['Entity'],
+         'slot_uri': 'schema:description'} })
+    url: Optional[str] = Field(default=None, description="""An optional URL associated with this instance.""", json_schema_extra = { "linkml_meta": {'alias': 'url', 'domain_of': ['Entity'], 'slot_uri': 'schema:url'} })
+    dateCreated: Optional[date] = Field(default=None, description="""The date on which the entity was created.""", json_schema_extra = { "linkml_meta": {'alias': 'dateCreated',
+         'domain_of': ['Entity'],
+         'slot_uri': 'schema:dateCreated'} })
+    dateModified: Optional[date] = Field(default=None, description="""The date on which the entity was most recently modified.""", json_schema_extra = { "linkml_meta": {'alias': 'dateModified',
+         'domain_of': ['Entity'],
+         'slot_uri': 'schema:dateModified'} })
 
-    type: str = Field(
-        default=...,
-        description="""String describing the python type""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "type",
-                "domain_of": [
-                    "HuggingFaceConnector",
-                    "ARESGoal",
-                    "ARESStrategy",
-                    "AresEvaluator",
-                ],
-            }
-        },
-    )
-    input_path: str = Field(
-        default="results/attack_goals_output.json",
-        description="""The input path""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "input_path",
-                "domain_of": ["ARESStrategy"],
-                "ifabsent": "results/attack_goals_output.json",
-            }
-        },
-    )
-    output_path: str = Field(
-        default=...,
-        description="""The output path""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "output_path",
-                "domain_of": ["ARESGoal", "ARESStrategy", "AresEvaluator"],
-            }
-        },
-    )
-    jailbreaks_path: Optional[str] = Field(
-        default=None,
-        description="""String describing the python type""",
-        json_schema_extra={
-            "linkml_meta": {"alias": "jailbreaks_path", "domain_of": ["ARESStrategy"]}
-        },
-    )
-    probe: Optional[str] = Field(
-        default=None,
-        description="""String describing the probe type""",
-        json_schema_extra={
-            "linkml_meta": {"alias": "probe", "domain_of": ["ARESStrategy"]}
-        },
-    )
-    templates: Optional[str] = Field(
-        default=None,
-        description="""String describing the python type""",
-        json_schema_extra={
-            "linkml_meta": {"alias": "templates", "domain_of": ["ARESStrategy"]}
-        },
-    )
-    id: str = Field(
-        default=...,
-        description="""A unique identifier to this instance of the model element. Example identifiers include UUID, URI, URN, etc.""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "id",
-                "domain_of": ["Entity"],
-                "slot_uri": "schema:identifier",
-            }
-        },
-    )
-    name: Optional[str] = Field(
-        default=None,
-        description="""A text name of this instance.""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "name",
-                "domain_of": ["Entity", "HuggingFaceConnector"],
-                "slot_uri": "schema:name",
-            }
-        },
-    )
-    description: Optional[str] = Field(
-        default=None,
-        description="""The description of an entity""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "description",
-                "domain_of": ["Entity"],
-                "slot_uri": "schema:description",
-            }
-        },
-    )
-    url: Optional[str] = Field(
-        default=None,
-        description="""An optional URL associated with this instance.""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "url",
-                "domain_of": ["Entity"],
-                "slot_uri": "schema:url",
-            }
-        },
-    )
-    dateCreated: Optional[date] = Field(
-        default=None,
-        description="""The date on which the entity was created.""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "dateCreated",
-                "domain_of": ["Entity"],
-                "slot_uri": "schema:dateCreated",
-            }
-        },
-    )
-    dateModified: Optional[date] = Field(
-        default=None,
-        description="""The date on which the entity was most recently modified.""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "dateModified",
-                "domain_of": ["Entity"],
-                "slot_uri": "schema:dateModified",
-            }
-        },
-    )
+
+class Connector(Entity):
+    linkml_meta: ClassVar[LinkMLMeta] = LinkMLMeta({'from_schema': 'https://ibm.github.io/ran-ares-integration/ontology/ares_config'})
+
+    prompt_path: str = Field(default=..., description="""The path for the prompt file""", json_schema_extra = { "linkml_meta": {'alias': 'prompt_path', 'domain_of': ['Connector']} })
+    id: str = Field(default=..., description="""A unique identifier to this instance of the model element. Example identifiers include UUID, URI, URN, etc.""", json_schema_extra = { "linkml_meta": {'alias': 'id', 'domain_of': ['Entity'], 'slot_uri': 'schema:identifier'} })
+    name: Optional[str] = Field(default=None, description="""A text name of this instance.""", json_schema_extra = { "linkml_meta": {'alias': 'name', 'domain_of': ['Entity'], 'slot_uri': 'schema:name'} })
+    description: Optional[str] = Field(default=None, description="""The description of an entity""", json_schema_extra = { "linkml_meta": {'alias': 'description',
+         'domain_of': ['Entity'],
+         'slot_uri': 'schema:description'} })
+    url: Optional[str] = Field(default=None, description="""An optional URL associated with this instance.""", json_schema_extra = { "linkml_meta": {'alias': 'url', 'domain_of': ['Entity'], 'slot_uri': 'schema:url'} })
+    dateCreated: Optional[date] = Field(default=None, description="""The date on which the entity was created.""", json_schema_extra = { "linkml_meta": {'alias': 'dateCreated',
+         'domain_of': ['Entity'],
+         'slot_uri': 'schema:dateCreated'} })
+    dateModified: Optional[date] = Field(default=None, description="""The date on which the entity was most recently modified.""", json_schema_extra = { "linkml_meta": {'alias': 'dateModified',
+         'domain_of': ['Entity'],
+         'slot_uri': 'schema:dateModified'} })
 
 
 class AresEvaluator(Entity):
     """
     Assess success by analysing payloads and responses for safety, security, or robustness failures.
     """
+    linkml_meta: ClassVar[LinkMLMeta] = LinkMLMeta({'from_schema': 'https://ibm.github.io/ran-ares-integration/ontology/ares_config'})
 
-    linkml_meta: ClassVar[LinkMLMeta] = LinkMLMeta(
-        {
-            "from_schema": "https://ibm.github.io/ran-ares-integration/ontology/ares_config"
-        }
-    )
-
-    type: str = Field(
-        default=...,
-        description="""String describing the python type""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "type",
-                "domain_of": [
-                    "HuggingFaceConnector",
-                    "ARESGoal",
-                    "ARESStrategy",
-                    "AresEvaluator",
-                ],
-            }
-        },
-    )
-    output_path: str = Field(
-        default="results/evaluation.json",
-        description="""The output path for the evaluation results""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "output_path",
-                "domain_of": ["ARESGoal", "ARESStrategy", "AresEvaluator"],
-                "ifabsent": "results/evaluation.json",
-            }
-        },
-    )
-    sensitive_type: Optional[str] = Field(
-        default=None,
-        description="""String describing the ARES evaluation type""",
-        json_schema_extra={
-            "linkml_meta": {"alias": "sensitive_type", "domain_of": ["AresEvaluator"]}
-        },
-    )
-    exclude_prompt: Optional[bool] = Field(
-        default=None,
-        description="""The input path the path to dataset of attacks generated by strategy""",
-        json_schema_extra={
-            "linkml_meta": {"alias": "exclude_prompt", "domain_of": ["AresEvaluator"]}
-        },
-    )
-    debug_mode: Optional[bool] = Field(
-        default=None,
-        description="""The output path for the evaluation results""",
-        json_schema_extra={
-            "linkml_meta": {"alias": "debug_mode", "domain_of": ["AresEvaluator"]}
-        },
-    )
-    connector: Optional[dict[str, HuggingFaceConnector]] = Field(
-        default=None,
-        description="""A Connector instance containing the evaluation model used.""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "connector",
-                "any_of": [{"range": "HuggingFaceConnector"}],
-                "domain_of": ["AresEvaluator"],
-            }
-        },
-    )
-    keyword_list_or_path: Optional[str] = Field(
-        default=None,
-        description="""String describing the ARES evaluation type""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "keyword_list_or_path",
-                "domain_of": ["AresEvaluator"],
-            }
-        },
-    )
-    id: str = Field(
-        default=...,
-        description="""A unique identifier to this instance of the model element. Example identifiers include UUID, URI, URN, etc.""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "id",
-                "domain_of": ["Entity"],
-                "slot_uri": "schema:identifier",
-            }
-        },
-    )
-    name: Optional[str] = Field(
-        default=None,
-        description="""A text name of this instance.""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "name",
-                "domain_of": ["Entity", "HuggingFaceConnector"],
-                "slot_uri": "schema:name",
-            }
-        },
-    )
-    description: Optional[str] = Field(
-        default=None,
-        description="""The description of an entity""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "description",
-                "domain_of": ["Entity"],
-                "slot_uri": "schema:description",
-            }
-        },
-    )
-    url: Optional[str] = Field(
-        default=None,
-        description="""An optional URL associated with this instance.""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "url",
-                "domain_of": ["Entity"],
-                "slot_uri": "schema:url",
-            }
-        },
-    )
-    dateCreated: Optional[date] = Field(
-        default=None,
-        description="""The date on which the entity was created.""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "dateCreated",
-                "domain_of": ["Entity"],
-                "slot_uri": "schema:dateCreated",
-            }
-        },
-    )
-    dateModified: Optional[date] = Field(
-        default=None,
-        description="""The date on which the entity was most recently modified.""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "dateModified",
-                "domain_of": ["Entity"],
-                "slot_uri": "schema:dateModified",
-            }
-        },
-    )
+    type: str = Field(default=..., description="""String describing the python type""", json_schema_extra = { "linkml_meta": {'alias': 'type', 'domain_of': ['ARESGoal', 'ARESStrategy', 'AresEvaluator']} })
+    output_path: str = Field(default="results/evaluation.json", description="""The output path for the evaluation results""", json_schema_extra = { "linkml_meta": {'alias': 'output_path',
+         'domain_of': ['ARESGoal', 'ARESStrategy', 'AresEvaluator'],
+         'ifabsent': 'results/evaluation.json'} })
+    sensitive_type: Optional[str] = Field(default=None, description="""String describing the ARES evaluation type""", json_schema_extra = { "linkml_meta": {'alias': 'sensitive_type', 'domain_of': ['AresEvaluator']} })
+    exclude_prompt: Optional[bool] = Field(default=None, description="""The input path the path to dataset of attacks generated by strategy""", json_schema_extra = { "linkml_meta": {'alias': 'exclude_prompt', 'domain_of': ['AresEvaluator']} })
+    debug_mode: Optional[bool] = Field(default=None, description="""The output path for the evaluation results""", json_schema_extra = { "linkml_meta": {'alias': 'debug_mode', 'domain_of': ['AresEvaluator']} })
+    detector: Optional[str] = Field(default=None, description="""A garak 'detector'""", json_schema_extra = { "linkml_meta": {'alias': 'detector', 'domain_of': ['AresEvaluator']} })
+    connector: Optional[dict[str, Connector]] = Field(default=None, description="""A Connector instance containing the evaluation model used.""", json_schema_extra = { "linkml_meta": {'alias': 'connector', 'domain_of': ['AresEvaluator']} })
+    intrinsic: Optional[str] = Field(default=None, description="""User supplied intrinsic""", json_schema_extra = { "linkml_meta": {'alias': 'intrinsic', 'domain_of': ['AresEvaluator']} })
+    keyword_list_or_path: Optional[str] = Field(default=None, description="""String describing the ARES evaluation type""", json_schema_extra = { "linkml_meta": {'alias': 'keyword_list_or_path', 'domain_of': ['AresEvaluator']} })
+    id: str = Field(default=..., description="""A unique identifier to this instance of the model element. Example identifiers include UUID, URI, URN, etc.""", json_schema_extra = { "linkml_meta": {'alias': 'id', 'domain_of': ['Entity'], 'slot_uri': 'schema:identifier'} })
+    name: Optional[str] = Field(default=None, description="""A text name of this instance.""", json_schema_extra = { "linkml_meta": {'alias': 'name', 'domain_of': ['Entity'], 'slot_uri': 'schema:name'} })
+    description: Optional[str] = Field(default=None, description="""The description of an entity""", json_schema_extra = { "linkml_meta": {'alias': 'description',
+         'domain_of': ['Entity'],
+         'slot_uri': 'schema:description'} })
+    url: Optional[str] = Field(default=None, description="""An optional URL associated with this instance.""", json_schema_extra = { "linkml_meta": {'alias': 'url', 'domain_of': ['Entity'], 'slot_uri': 'schema:url'} })
+    dateCreated: Optional[date] = Field(default=None, description="""The date on which the entity was created.""", json_schema_extra = { "linkml_meta": {'alias': 'dateCreated',
+         'domain_of': ['Entity'],
+         'slot_uri': 'schema:dateCreated'} })
+    dateModified: Optional[date] = Field(default=None, description="""The date on which the entity was most recently modified.""", json_schema_extra = { "linkml_meta": {'alias': 'dateModified',
+         'domain_of': ['Entity'],
+         'slot_uri': 'schema:dateModified'} })
 
 
 class AresIntent(Entity):
     """
     ARES uses intent to map and automatically run series of attacks.
     """
+    linkml_meta: ClassVar[LinkMLMeta] = LinkMLMeta({'class_uri': 'schema:AresIntent',
+         'from_schema': 'https://ibm.github.io/ran-ares-integration/ontology/ares_config'})
 
-    linkml_meta: ClassVar[LinkMLMeta] = LinkMLMeta(
-        {
-            "class_uri": "schema:AresIntent",
-            "from_schema": "https://ibm.github.io/ran-ares-integration/ontology/ares_config",
-        }
-    )
-
-    goal: ARESGoal = Field(
-        default=...,
-        json_schema_extra={
-            "linkml_meta": {"alias": "goal", "domain_of": ["ARESGoal", "AresIntent"]}
-        },
-    )
-    strategy: dict[str, ARESStrategy] = Field(
-        default=...,
-        description="""The path to the prompts file""",
-        json_schema_extra={
-            "linkml_meta": {"alias": "strategy", "domain_of": ["AresIntent"]}
-        },
-    )
-    evaluation: AresEvaluator = Field(
-        default=...,
-        description="""The path to the prompts file""",
-        json_schema_extra={
-            "linkml_meta": {"alias": "evaluation", "domain_of": ["AresIntent"]}
-        },
-    )
-    id: str = Field(
-        default=...,
-        description="""A unique identifier to this instance of the model element. Example identifiers include UUID, URI, URN, etc.""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "id",
-                "domain_of": ["Entity"],
-                "slot_uri": "schema:identifier",
-            }
-        },
-    )
-    name: Optional[str] = Field(
-        default=None,
-        description="""A text name of this instance.""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "name",
-                "domain_of": ["Entity", "HuggingFaceConnector"],
-                "slot_uri": "schema:name",
-            }
-        },
-    )
-    description: Optional[str] = Field(
-        default=None,
-        description="""The description of an entity""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "description",
-                "domain_of": ["Entity"],
-                "slot_uri": "schema:description",
-            }
-        },
-    )
-    url: Optional[str] = Field(
-        default=None,
-        description="""An optional URL associated with this instance.""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "url",
-                "domain_of": ["Entity"],
-                "slot_uri": "schema:url",
-            }
-        },
-    )
-    dateCreated: Optional[date] = Field(
-        default=None,
-        description="""The date on which the entity was created.""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "dateCreated",
-                "domain_of": ["Entity"],
-                "slot_uri": "schema:dateCreated",
-            }
-        },
-    )
-    dateModified: Optional[date] = Field(
-        default=None,
-        description="""The date on which the entity was most recently modified.""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "dateModified",
-                "domain_of": ["Entity"],
-                "slot_uri": "schema:dateModified",
-            }
-        },
-    )
+    goal: ARESGoal = Field(default=..., json_schema_extra = { "linkml_meta": {'alias': 'goal', 'domain_of': ['ARESGoal', 'AresIntent']} })
+    strategy: dict[str, ARESStrategy] = Field(default=..., description="""The path to the prompts file""", json_schema_extra = { "linkml_meta": {'alias': 'strategy', 'domain_of': ['AresIntent']} })
+    evaluation: AresEvaluator = Field(default=..., description="""The path to the prompts file""", json_schema_extra = { "linkml_meta": {'alias': 'evaluation', 'domain_of': ['AresIntent']} })
+    id: str = Field(default=..., description="""A unique identifier to this instance of the model element. Example identifiers include UUID, URI, URN, etc.""", json_schema_extra = { "linkml_meta": {'alias': 'id', 'domain_of': ['Entity'], 'slot_uri': 'schema:identifier'} })
+    name: Optional[str] = Field(default=None, description="""A text name of this instance.""", json_schema_extra = { "linkml_meta": {'alias': 'name', 'domain_of': ['Entity'], 'slot_uri': 'schema:name'} })
+    description: Optional[str] = Field(default=None, description="""The description of an entity""", json_schema_extra = { "linkml_meta": {'alias': 'description',
+         'domain_of': ['Entity'],
+         'slot_uri': 'schema:description'} })
+    url: Optional[str] = Field(default=None, description="""An optional URL associated with this instance.""", json_schema_extra = { "linkml_meta": {'alias': 'url', 'domain_of': ['Entity'], 'slot_uri': 'schema:url'} })
+    dateCreated: Optional[date] = Field(default=None, description="""The date on which the entity was created.""", json_schema_extra = { "linkml_meta": {'alias': 'dateCreated',
+         'domain_of': ['Entity'],
+         'slot_uri': 'schema:dateCreated'} })
+    dateModified: Optional[date] = Field(default=None, description="""The date on which the entity was most recently modified.""", json_schema_extra = { "linkml_meta": {'alias': 'dateModified',
+         'domain_of': ['Entity'],
+         'slot_uri': 'schema:dateModified'} })
 
 
 class RiskToARESIntent(Entity):
     """
     The Entity holding mapping information from risk Id to the ARES red teaming configuration.
     """
+    linkml_meta: ClassVar[LinkMLMeta] = LinkMLMeta({'from_schema': 'https://ibm.github.io/ran-ares-integration/ontology/ares_config'})
 
-    linkml_meta: ClassVar[LinkMLMeta] = LinkMLMeta(
-        {
-            "from_schema": "https://ibm.github.io/ran-ares-integration/ontology/ares_config"
-        }
-    )
-
-    risk_id: str = Field(
-        default=...,
-        description="""risk_id""",
-        json_schema_extra={
-            "linkml_meta": {"alias": "risk_id", "domain_of": ["RiskToARESIntent"]}
-        },
-    )
-    intent: AresIntent = Field(
-        default=...,
-        description="""intent""",
-        json_schema_extra={
-            "linkml_meta": {"alias": "intent", "domain_of": ["RiskToARESIntent"]}
-        },
-    )
-    id: str = Field(
-        default=...,
-        description="""A unique identifier to this instance of the model element. Example identifiers include UUID, URI, URN, etc.""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "id",
-                "domain_of": ["Entity"],
-                "slot_uri": "schema:identifier",
-            }
-        },
-    )
-    name: Optional[str] = Field(
-        default=None,
-        description="""A text name of this instance.""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "name",
-                "domain_of": ["Entity", "HuggingFaceConnector"],
-                "slot_uri": "schema:name",
-            }
-        },
-    )
-    description: Optional[str] = Field(
-        default=None,
-        description="""The description of an entity""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "description",
-                "domain_of": ["Entity"],
-                "slot_uri": "schema:description",
-            }
-        },
-    )
-    url: Optional[str] = Field(
-        default=None,
-        description="""An optional URL associated with this instance.""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "url",
-                "domain_of": ["Entity"],
-                "slot_uri": "schema:url",
-            }
-        },
-    )
-    dateCreated: Optional[date] = Field(
-        default=None,
-        description="""The date on which the entity was created.""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "dateCreated",
-                "domain_of": ["Entity"],
-                "slot_uri": "schema:dateCreated",
-            }
-        },
-    )
-    dateModified: Optional[date] = Field(
-        default=None,
-        description="""The date on which the entity was most recently modified.""",
-        json_schema_extra={
-            "linkml_meta": {
-                "alias": "dateModified",
-                "domain_of": ["Entity"],
-                "slot_uri": "schema:dateModified",
-            }
-        },
-    )
+    risk_id: str = Field(default=..., description="""risk_id""", json_schema_extra = { "linkml_meta": {'alias': 'risk_id', 'domain_of': ['RiskToARESIntent']} })
+    intent: AresIntent = Field(default=..., description="""intent""", json_schema_extra = { "linkml_meta": {'alias': 'intent', 'domain_of': ['RiskToARESIntent']} })
+    id: str = Field(default=..., description="""A unique identifier to this instance of the model element. Example identifiers include UUID, URI, URN, etc.""", json_schema_extra = { "linkml_meta": {'alias': 'id', 'domain_of': ['Entity'], 'slot_uri': 'schema:identifier'} })
+    name: Optional[str] = Field(default=None, description="""A text name of this instance.""", json_schema_extra = { "linkml_meta": {'alias': 'name', 'domain_of': ['Entity'], 'slot_uri': 'schema:name'} })
+    description: Optional[str] = Field(default=None, description="""The description of an entity""", json_schema_extra = { "linkml_meta": {'alias': 'description',
+         'domain_of': ['Entity'],
+         'slot_uri': 'schema:description'} })
+    url: Optional[str] = Field(default=None, description="""An optional URL associated with this instance.""", json_schema_extra = { "linkml_meta": {'alias': 'url', 'domain_of': ['Entity'], 'slot_uri': 'schema:url'} })
+    dateCreated: Optional[date] = Field(default=None, description="""The date on which the entity was created.""", json_schema_extra = { "linkml_meta": {'alias': 'dateCreated',
+         'domain_of': ['Entity'],
+         'slot_uri': 'schema:dateCreated'} })
+    dateModified: Optional[date] = Field(default=None, description="""The date on which the entity was most recently modified.""", json_schema_extra = { "linkml_meta": {'alias': 'dateModified',
+         'domain_of': ['Entity'],
+         'slot_uri': 'schema:dateModified'} })
 
 
 class RiskToARESMapping(ConfiguredBaseModel):
     """
     An umbrella object that holds mapping instances from AI Atlas Nexus to ARES.
     """
+    linkml_meta: ClassVar[LinkMLMeta] = LinkMLMeta({'from_schema': 'https://ibm.github.io/ran-ares-integration/ontology/ares_config',
+         'tree_root': True})
 
-    linkml_meta: ClassVar[LinkMLMeta] = LinkMLMeta(
-        {
-            "from_schema": "https://ibm.github.io/ran-ares-integration/ontology/ares_config",
-            "tree_root": True,
-        }
-    )
-
-    mappings: Optional[list[RiskToARESIntent]] = Field(
-        default=None,
-        description="""A list of ares goals""",
-        json_schema_extra={
-            "linkml_meta": {"alias": "mappings", "domain_of": ["RiskToARESMapping"]}
-        },
-    )
+    mappings: Optional[list[RiskToARESIntent]] = Field(default=None, description="""A list of ares goals""", json_schema_extra = { "linkml_meta": {'alias': 'mappings', 'domain_of': ['RiskToARESMapping']} })
 
 
 # Model rebuild
 # see https://pydantic-docs.helpmanual.io/usage/models/#rebuilding-a-model
 Entity.model_rebuild()
-Connector.model_rebuild()
-HuggingFaceConnector.model_rebuild()
-ModelConfig.model_rebuild()
-TokenizerConfig.model_rebuild()
-GenerateKwargs.model_rebuild()
-ChatTemplate.model_rebuild()
-GenerateParams.model_rebuild()
-TargetConnectors.model_rebuild()
 ARESGoal.model_rebuild()
 ARESStrategy.model_rebuild()
+Connector.model_rebuild()
 AresEvaluator.model_rebuild()
 AresIntent.model_rebuild()
 RiskToARESIntent.model_rebuild()
 RiskToARESMapping.model_rebuild()
+

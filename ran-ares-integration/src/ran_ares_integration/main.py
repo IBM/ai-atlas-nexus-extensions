@@ -4,15 +4,18 @@ from typing import Dict, List
 
 import pandas as pd
 import yaml
-from ares.redteam import RedTeamer
-from jinja2 import Template
 from ai_atlas_nexus.ai_risk_ontology.datamodel.ai_risk_ontology import Risk
 from ai_atlas_nexus.blocks.inference import InferenceEngine
 from ai_atlas_nexus.toolkit.logging import configure_logger
+from ares.redteam import RedTeamer
+from jinja2 import Template
 
-from ran_ares_integration.assets import ASSETS_DIR_PATH, RISK_TO_ARES_MAPPING
+from ran_ares_integration.assets import (
+    ARES_CONNECTORS,
+    ASSETS_DIR_PATH,
+    RISK_TO_ARES_MAPPING,
+)
 from ran_ares_integration.datamodel.risk_to_ares_ontology import RiskToARESIntent
-from ran_ares_integration.datamodel.target_connector_ontology import Connector
 from ran_ares_integration.utils.prompt_templates import ARES_GOALS_TEMPLATE
 
 
@@ -53,7 +56,7 @@ def generate_attack_seeds(risk, inference_engine):
 
 class Extension:
 
-    def __init__(self, inference_engine: InferenceEngine, target: Connector):
+    def __init__(self, inference_engine: InferenceEngine, target: Dict):
         """Main extension class to run the task
 
         Args:
@@ -87,7 +90,7 @@ class Extension:
 
             logger.info(f"ARES mapping found for risk: {risk.name}")
 
-            logger.info(f"Generating attack seeds...")
+            # logger.info(f"Generating attack seeds...")
             attack_seeds = generate_attack_seeds(risk, self.inference_engine)
             logger.info(f"No. of attack seeds generated: {len(attack_seeds)}")
 
@@ -98,25 +101,21 @@ class Extension:
             ).to_csv(attack_seeds_path, index=False)
 
             # replace ARES assests path wherever applicable
-            ares_intent = ares_intent.model_dump(by_alias=True)
+            ares_intent = ares_intent.model_dump(exclude_none=True, exclude_unset=True)
             resolve_ares_assets_path(ares_intent, ASSETS_DIR_PATH)
 
             # Call ARES RedTeamer API for evaluation
             try:
                 rt = RedTeamer(
                     user_config={
-                        "target": {
-                            self.target.name: self.target.model_dump(by_alias=True)
-                        },
+                        "target": {self.target["name"]: self.target},
                         "red-teaming": {
                             "intent": ares_intent["name"],
                             "prompts": attack_seeds_path,
                         },
                         ares_intent["name"]: ares_intent,
                     },
-                    connectors=yaml.safe_load(
-                        ASSETS_DIR_PATH.joinpath("connectors.yaml").read_text()
-                    )["connectors"],
+                    connectors=ARES_CONNECTORS,
                     verbose=False,
                 )
                 rt.redteam(False, -1)

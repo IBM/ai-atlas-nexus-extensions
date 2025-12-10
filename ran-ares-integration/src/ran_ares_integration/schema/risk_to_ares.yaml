@@ -8,7 +8,6 @@ default_curi_maps:
 imports:
   - linkml:types
   - common
-  - target_connector
 prefixes:
   linkml: https://w3id.org/linkml/
 default_range: string
@@ -30,7 +29,7 @@ classes:
         description: filename to output of the processed goals
         range: string
         required: true
-        ifabsent: results/attack_goals_output.json
+        ifabsent: results/attack_goals.json
       goal:
         description: column name of the field in the input file to be used as source of goals
         range: string
@@ -55,22 +54,31 @@ classes:
         description: The input path
         range: string
         required: true
-        ifabsent: results/attack_goals_output.json
+        ifabsent: results/attack_goals.json
       output_path:
         description: The output path
         range: string
         required: true
       jailbreaks_path:
-        description: String describing the python type
+        description: jailbreaks path
         range: string
       probe:
-        description: String describing the probe type
+        description: A Garak encoding probe to aligned with attack strategy
         range: string
       templates:
-        description: String describing the python type
+        description: Instruction templates.
         range: string
+        multivalued: true
     slots:
       - type
+
+  Connector:
+    is_a: Entity
+    attributes:
+      prompt_path:
+        description: The path for the prompt file
+        range: string
+        required: true
 
   AresEvaluator:
     is_a: Entity
@@ -91,20 +99,27 @@ classes:
       debug_mode:
         description: The output path for the evaluation results
         range: boolean
+      detector:
+        description: A garak 'detector'
+        range: string
+        required: false
       connector:
         description: A Connector instance containing the evaluation model used.
-        any_of:
-          - range: HuggingFaceConnector
+        range: Connector
         multivalued: true
         inlined: true
         inlined_as_list: false
+        required: false
+      intrinsic:
+        description: User supplied intrinsic
+        range: string
         required: false
       keyword_list_or_path:
         description: String describing the ARES evaluation type
         range: string
     slots:
       type
-        
+  
   AresIntent:
     is_a: Entity
     description: >-

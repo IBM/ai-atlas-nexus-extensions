@@ -5,6 +5,21 @@
 - id: llm_eval
   name: LLM Eval
   type: ares.evals.llm_eval.LLMEval
+  connector:
+    harmbench-eval-llama:
+      id: harmbench_eval_llama
+      prompt_path: 'assets/harmbench_prompt.yaml'
+- id: llm_eval_2
+  name: LLM Eval
+  type: ares.evals.llm_eval.LLMEval
+  connector:
+    harmbench-eval-llama-2:
+      id: harmbench_eval_llama
+      prompt_path: 'assets/harmbench_prompt.yaml'
 - id: decode_match
   name: Decode Match
   type: ares_garak.evals.encoding.Detector
+- id: intrinsic_eval
+  name: IntrinsicEval
+  type: ares_intrinsics.evals.intrinsics.IntrinsicEval
+  intrinsic: granite-3.3-8b-instruct-lora-pii-detector

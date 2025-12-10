@@ -2,3 +2,6 @@
   name: Generic Attack Goal
   type: ares.goals.generic_attack_goal.GenericAttackGoal
   goal: Behavior
+- id: gcg_goal
+  name: GCG Attack Goal
+  type: ares_gcg.goals.gcg_goals.GCGGoal

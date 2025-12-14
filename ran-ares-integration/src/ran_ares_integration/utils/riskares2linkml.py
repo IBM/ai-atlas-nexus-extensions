@@ -82,7 +82,9 @@ for risk_to_ares in risk_to_ares_configs:
                 name=f"{risk_to_ares["risk_name"].replace(" ","_")}-Ares_Intent",
                 goal=ARESGoal(**goal),
                 strategy={
-                    strategy_name: parse_strategy_params(strategy_params)
+                    strategy_name: ARESStrategy(
+                        **parse_strategy_params(strategy_params)
+                    )
                     for strategy_name, strategy_params in strategies.items()
                 },
                 evaluation=AresEvaluator(**evaluation),

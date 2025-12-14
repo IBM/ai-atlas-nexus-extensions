@@ -7,15 +7,17 @@ from ran_ares_integration.datamodel.risk_to_ares_ontology import RiskToARESMappi
 from ran_ares_integration.utils.data_utils import read_yaml
 
 
-ASSETS_DIR_PATH = Path(__file__).parent.absolute()
+def load_ares_mappings() -> RiskToARESMapping:
+    return yaml_loader.load_any(
+        source=yaml_loader.load_as_dict(
+            source=os.path.join(
+                ASSETS_DIR_PATH, "knowledge_graph", "risk_to_ares_mappings.yaml"
+            )
+        ),
+        target_class=RiskToARESMapping,
+    )
 
-RISK_TO_ARES_MAPPING: RiskToARESMapping = yaml_loader.load_any(
-    source=yaml_loader.load_as_dict(
-        source=os.path.join(
-            ASSETS_DIR_PATH, "knowledge_graph", "risk_to_ares_mappings.yaml"
-        )
-    ),
-    target_class=RiskToARESMapping,
-)
+
+ASSETS_DIR_PATH = Path(__file__).parent.absolute()
 
 ARES_CONNECTORS = read_yaml(ASSETS_DIR_PATH.joinpath("connectors.yaml"))["connectors"]

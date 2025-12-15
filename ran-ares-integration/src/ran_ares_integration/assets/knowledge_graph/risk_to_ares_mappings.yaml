@@ -1,6 +1,6 @@
 mappings:
 - id: a250a5b3-26a8-452a-bceb-5159badf287b
-  risk_id: direct-instructions-attack
+  risk_id: atlas-direct-instructions-attack
   intent:
     id: 34241535-f94f-4c77-a977-c34eed520f14
     name: Direct_Instructions_Attack-Ares_Intent
@@ -24,7 +24,7 @@ mappings:
       output_path: results/evaluation.json
       keyword_list_or_path: assets/advbench_refusal_keywords.json
 - id: 602efdc4-44ca-4bf6-9565-b4057fe011b4
-  risk_id: encoded-interactions-attack
+  risk_id: atlas-encoded-interactions-attack
   intent:
     id: e8ecd5ae-385e-485f-bedb-e450e300fd32
     name: Encoded_Interactions_Attack-Ares_Intent
@@ -53,7 +53,7 @@ mappings:
       output_path: results/evaluation.json
       keyword_list_or_path: assets/advbench_refusal_keywords.json
 - id: 35c9184f-292e-48b1-832a-ceac08ae0719
-  risk_id: social-hacking-attack
+  risk_id: atlas-social-hacking-attack
   intent:
     id: 8c97a4e1-91c0-4315-bb35-07ce55b0d0a5
     name: Social_Hacking_Attack-Ares_Intent
@@ -81,7 +81,7 @@ mappings:
           id: harmbench_eval_llama
           prompt_path: assets/harmbench_prompt.yaml
 - id: 1bad6061-e1d2-4a16-98e6-850143eec8f7
-  risk_id: specialized-tokens-attack
+  risk_id: atlas-specialized-tokens-attack
   intent:
     id: 502d25d7-782b-4ea7-bc6e-9e2b992e4976
     name: Specialized_Tokens_Attack-Ares_Intent

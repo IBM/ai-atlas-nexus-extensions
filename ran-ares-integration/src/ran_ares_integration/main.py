@@ -3,19 +3,22 @@ import tempfile
 from typing import Dict, List
 
 import pandas as pd
-import yaml
 from ai_atlas_nexus.ai_risk_ontology.datamodel.ai_risk_ontology import Risk
 from ai_atlas_nexus.blocks.inference import InferenceEngine
 from ai_atlas_nexus.toolkit.logging import configure_logger
 from ares.redteam import RedTeamer
 from jinja2 import Template
 
+import ran_ares_integration.mapper as mapper
 from ran_ares_integration.assets import (
     ARES_CONNECTORS,
     ASSETS_DIR_PATH,
-    RISK_TO_ARES_MAPPING,
+    load_ares_mappings,
 )
-from ran_ares_integration.datamodel.risk_to_ares_ontology import RiskToARESIntent
+from ran_ares_integration.datamodel.risk_to_ares_ontology import (
+    RiskToARESIntent,
+    RiskToARESMapping,
+)
 from ran_ares_integration.utils.prompt_templates import ARES_GOALS_TEMPLATE
 
 
@@ -66,61 +69,86 @@ class Extension:
         self.inference_engine = inference_engine
         self.target = target
 
-    def run(self, risk: Risk):
+    def generate_mapping(self, risk: Risk) -> Dict:
+        return mapper.generate(risk, self.inference_engine)
+
+    def update_mapping(self, ares_config: Dict) -> RiskToARESMapping:
+        return mapper.update(ares_config)
+
+    def run(self, risk: Risk, auto_update_mapping=False) -> None:
         """Submit potential attack risks for ARES red-teaming evaluation
 
         Args:
-            risks (List[Risk]):
-                A List of attack risks
-
-        Returns:
-            None
+            risk (Risk):
+                An AI Atals Nexus risk to start ARES evaluation
+            auto_update_mapping (bool, optional): Whether to update ARES mappings automatically
+                if the given risk is not present. Defaults to False.
         """
 
         # filter risk_to_ares mappings for the given risk
         risk_to_ares_intents: List[RiskToARESIntent] = list(
             filter(
-                lambda mapping: mapping.risk_id == risk.tag,
-                RISK_TO_ARES_MAPPING.mappings,
+                lambda mapping: mapping.risk_id == risk.id,
+                load_ares_mappings().mappings,
             )
         )
 
-        if len(risk_to_ares_intents) == 1:
-            ares_intent = risk_to_ares_intents[0].intent
-
-            logger.info(f"ARES mapping found for risk: {risk.name}")
-
-            # logger.info(f"Generating attack seeds...")
-            attack_seeds = generate_attack_seeds(risk, self.inference_engine)
-            logger.info(f"No. of attack seeds generated: {len(attack_seeds)}")
-
-            # Write ARES attack seeds to a tmp file system
-            attack_seeds_path = os.path.join(tempfile.gettempdir(), "attack_seeds.csv")
-            pd.DataFrame(attack_seeds).rename(
-                columns={"prompt": ares_intent.goal.goal}
-            ).to_csv(attack_seeds_path, index=False)
-
-            # replace ARES assests path wherever applicable
-            ares_intent = ares_intent.model_dump(exclude_none=True, exclude_unset=True)
-            resolve_ares_assets_path(ares_intent, ASSETS_DIR_PATH)
-
-            # Call ARES RedTeamer API for evaluation
-            try:
-                rt = RedTeamer(
-                    user_config={
-                        "target": {self.target["name"]: self.target},
-                        "red-teaming": {
-                            "intent": ares_intent["name"],
-                            "prompts": attack_seeds_path,
-                        },
-                        ares_intent["name"]: ares_intent,
-                    },
-                    connectors=ARES_CONNECTORS,
-                    verbose=False,
+        if len(risk_to_ares_intents) == 0:
+            if not auto_update_mapping:
+                raise Exception(
+                    f"ARES mapping not available for risk: {risk.name}. To enable automatic ARES mapping, please re-run with the `auto_update_mapping` flag set to True."
                 )
-                rt.redteam(False, -1)
-            except Exception as e:
-                print(str(e))
-                return
-        else:
-            raise Exception(f"ARES mapping not available for: {risk.name}")
+            else:
+                logger.warning(
+                    f"ARES mapping not available for: {risk.name}. Preparing to update ARES mapping before starting evaluation..."
+                )
+                ares_config = self.generate_mapping(risk)
+                mappings = self.update_mapping(ares_config)
+                logger.warning(
+                    f"Generated mapping added to the current python environment. Please ask the extension owner if you want the mapping to be permanently added to the extension."
+                )
+
+                # search again after the update
+                risk_to_ares_intents: List[RiskToARESIntent] = list(
+                    filter(lambda mapping: mapping.risk_id == risk.id, mappings)
+                )
+
+                if len(risk_to_ares_intents) == 0:
+                    raise Exception("ARES mapping update failed.")
+
+        ares_intent = risk_to_ares_intents[0].intent
+
+        logger.info(f"ARES mapping found for risk: {risk.name}")
+
+        # logger.info(f"Generating attack seeds...")
+        attack_seeds = generate_attack_seeds(risk, self.inference_engine)
+        logger.info(f"No. of attack seeds generated: {len(attack_seeds)}")
+
+        # Write ARES attack seeds to a tmp file system
+        attack_seeds_path = os.path.join(tempfile.gettempdir(), "attack_seeds.csv")
+        pd.DataFrame(attack_seeds).rename(
+            columns={"prompt": ares_intent.goal.goal}
+        ).to_csv(attack_seeds_path, index=False)
+
+        # replace ARES assests path wherever applicable
+        ares_intent = ares_intent.model_dump(exclude_none=True, exclude_unset=True)
+        resolve_ares_assets_path(ares_intent, ASSETS_DIR_PATH)
+
+        # Call ARES RedTeamer API for evaluation
+        try:
+            rt = RedTeamer(
+                user_config={
+                    "target": {self.target["name"]: self.target},
+                    "red-teaming": {
+                        "intent": ares_intent["name"],
+                        "prompts": attack_seeds_path,
+                    },
+                    ares_intent["name"]: ares_intent,
+                },
+                connectors=ARES_CONNECTORS,
+                verbose=False,
+            )
+            rt.redteam(False, -1)
+        except Exception as e:
+            print(str(e))
+            return
